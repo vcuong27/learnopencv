@@ -1,6 +1,7 @@
 import csv
 import subprocess
 import os
+import urllib.request as req
 
 runMode = "train"
 classes = ["Snowman"]
@@ -33,10 +34,11 @@ for ind in range(0, len(classes)):
         cnt = cnt + 1
         print("annotation count : " + str(cnt))
         lineParts = line.split(',')
-        subprocess.run([ 'aws', 's3', '--no-sign-request', '--only-show-errors', 'cp', 's3://open-images-dataset/'+runMode+'/'+lineParts[0]+".jpg", 'JPEGImages/'+lineParts[0]+".jpg"])
+        #subprocess.run([ 'aws', 's3', '--no-sign-request', '--only-show-errors', 'cp', 's3://open-images-dataset/'+runMode+'/'+lineParts[0]+".jpg", 'JPEGImages/'+lineParts[0]+".jpg"])
         with open('labels/%s.txt'%(lineParts[0]),'a') as f:
             f.write(' '.join([str(ind),str((float(lineParts[5]) + float(lineParts[4]))/2), str((float(lineParts[7]) + float(lineParts[6]))/2), str(float(lineParts[5])-float(lineParts[4])),str(float(lineParts[7])-float(lineParts[6]))])+'\n')
-
+        imgurl ="https://storage.googleapis.com/dp-missions/openimages/detection/images/train/"+lineParts[0]+".jpg"
+        req.urlretrieve(imgurl, "JPEGImages/"+lineParts[0]+".jpg")
 
 
 
